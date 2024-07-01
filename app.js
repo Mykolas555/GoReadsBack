@@ -78,12 +78,15 @@ app.get('/auth/google/callback',
       );
 
       // Set the cookies before redirecting
-      
+      res.cookie('Token', token, { httpOnly: true, secure: true, sameSite: 'Lax' });
+      res.cookie('ID', req.user.id, { httpOnly: true, secure: true, sameSite: 'Lax' });
+      res.cookie('User', req.user.name.givenName, { httpOnly: false, secure: false, sameSite: 'Lax' });
 
       console.log("User logged in with Google");
 
       // Redirect to the front end URL
-      res.redirect(process.env.FRONT_END_URL);
+      res.redirect(process.env.FRONT_END_URL)
+      
 
     } catch (error) {
       console.error("Error during Google authentication callback:", error);
@@ -110,9 +113,6 @@ app.get('/auth/logout', (req, res) => {
 app.get('/auth/status', (req, res) => {
   if (req.isAuthenticated()) {
     res.json({ authenticated: true, user: req.user });
-    res.cookie('Token', token, { httpOnly: false, secure: false, sameSite: 'Lax' });
-    res.cookie('ID', req.user.id, { httpOnly: false, secure: false, sameSite: 'Lax' });
-    res.cookie('User', req.user.name.givenName, { httpOnly: false, secure: false, sameSite: 'Lax' });
   } else {
     res.json({ authenticated: false });
   }
