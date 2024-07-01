@@ -6,16 +6,10 @@ const passport = require('passport');
 const session = require('express-session');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const jwt = require('jsonwebtoken');
-const cookieParser = require('cookie-parser');
 const app = express();
-
 dotenv.config({ path: './config.env' });
-
 app.use(express.json());
 app.use(morgan('dev'));
-
-// Cookie parser
-app.use(cookieParser());
 
 // Cors
 app.use(cors({
@@ -23,22 +17,26 @@ app.use(cors({
   credentials: true
 }));
 
+// Routes
+const readRoutes = require('./routes/readRoutes');
+app.use('/api/reads', readRoutes);
+
 // Session
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true, sameSite: 'Lax' }
+  cookie: { secure: false, httpOnly: false }
 }));
 
-// Passport initialization
+// Google auth
 app.use(passport.initialize());
 app.use(passport.session());
 
 passport.use(new GoogleStrategy({
   clientID: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
-  callbackURL: `${process.env.BACK_END_URL}/auth/google/callback` // Ensure this matches the Google Developer Console setting
+  callbackURL: "/auth/google/callback"
 },
 function(accessToken, refreshToken, profile, done) {
   profile.accessToken = accessToken;
@@ -53,10 +51,6 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-// Routes
-const readRoutes = require('./routes/readRoutes');
-app.use('/api/reads', readRoutes);
-
 // Google auth routes
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
@@ -65,7 +59,9 @@ app.get('/auth/google',
 const findOrCreateUser = require('./controllers/userContorller').findOrCreateUser;
 
 app.get('/auth/google/callback',
+
   passport.authenticate('google', { failureRedirect: process.env.FRONT_END_URL }),
+
   async (req, res) => {
     try {
       const userID = req.user.id;
@@ -82,22 +78,17 @@ app.get('/auth/google/callback',
       );
 
       // Set the cookies before redirecting
-      const cookieOptions = {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'Lax',
-        domain: process.env.FRONT_END_URL, // Ensure this matches your domain
-        path: '/'
-      };
-
-      res.cookie('Token', token, cookieOptions);
-      res.cookie('ID', req.user.id, cookieOptions);
-      res.cookie('User', req.user.name.givenName, { ...cookieOptions, httpOnly: true });
+      res
+      .cookie('Token', token, { httpOnly: false, secure: false })
+      .cookie('ID', req.user.id, { httpOnly: false, secure: false })
+      .cookie('User', req.user.name.givenName, { httpOnly: false, secure: false })
+      .redirect(process.env.FRONT_END_URL)
 
       console.log("User logged in with Google");
 
       // Redirect to the front end URL
-      res.redirect(process.env.FRONT_END_URL);
+      
+      
 
     } catch (error) {
       console.error("Error during Google authentication callback:", error);
@@ -105,6 +96,7 @@ app.get('/auth/google/callback',
     }
   }
 );
+
 
 app.get('/auth/logout', (req, res) => {
   res.clearCookie('Token');
