@@ -80,10 +80,10 @@ app.get('/auth/google/callback',
 
       // Set the cookies before redirecting with secure attributes
       res
-        .cookie('Token', token, { httpOnly: true, secure: true, domain: 'goreadsfront.onrender.com', sameSite: 'Lax' })
-        .cookie('ID', req.user.id, { httpOnly: true, secure: true, domain: 'goreadsfront.onrender.com', sameSite: 'Lax' })
-        .cookie('User', req.user.name.givenName, { httpOnly: true, secure: true, domain: 'goreadsfront.onrender.com', sameSite: 'Lax' })
-        .redirect(process.env.FRONT_END_URL)
+      .cookie('Token', token, { httpOnly: true, secure: true, domain: 'goreadsfront.onrender.com', sameSite: 'None' })
+      .cookie('ID', req.user.id, { httpOnly: true, secure: true, domain: 'goreadsfront.onrender.com', sameSite: 'None' })
+      .cookie('User', req.user.name.givenName, { httpOnly: true, secure: true, domain: 'goreadsfront.onrender.com', sameSite: 'None' })
+      .redirect(process.env.FRONT_END_URL);
 
       console.log("User logged in with Google");
     } catch (error) {
