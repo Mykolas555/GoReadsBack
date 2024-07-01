@@ -78,12 +78,12 @@ app.get('/auth/google/callback',
         process.env.JWT_SECRET
       );
 
-      // Set the cookies before redirecting
+      // Set the cookies before redirecting with secure attributes
       res
-      .cookie('Token', token, { httpOnly: true, secure: true })
-      .cookie('ID', req.user.id, { httpOnly: true, secure: true })
-      .cookie('User', req.user.name.givenName, { httpOnly: true, secure: true })
-      .redirect(process.env.FRONT_END_URL)
+        .cookie('Token', token, { httpOnly: true, secure: true, domain: 'goreadsfront.onrender.com', sameSite: 'Lax' })
+        .cookie('ID', req.user.id, { httpOnly: true, secure: true, domain: 'goreadsfront.onrender.com', sameSite: 'Lax' })
+        .cookie('User', req.user.name.givenName, { httpOnly: true, secure: true, domain: 'goreadsfront.onrender.com', sameSite: 'Lax' })
+        .redirect(process.env.FRONT_END_URL)
 
       console.log("User logged in with Google");
     } catch (error) {
@@ -92,6 +92,7 @@ app.get('/auth/google/callback',
     }
   }
 );
+
 
 
 app.get('/auth/logout', (req, res) => {
