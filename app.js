@@ -78,9 +78,10 @@ app.get('/auth/google/callback',
       );
 
       // Set the cookies before redirecting
-      res.cookie('Token', token, { httpOnly: true, secure: true, sameSite: 'Lax' });
-      res.cookie('ID', req.user.id, { httpOnly: true, secure: true, sameSite: 'Lax' });
-      res.cookie('User', req.user.name.givenName, { httpOnly: false, secure: false, sameSite: 'Lax' });
+      res.cookie('Token', token, { httpOnly: true, secure: true, sameSite: 'Lax', domain: process.env.FRONT_END_URL, path: '/' });
+      res.cookie('ID', req.user.id, { httpOnly: true, secure: true, sameSite: 'Lax', domain: process.env.FRONT_END_URL, path: '/' });
+      res.cookie('User', req.user.name.givenName, { httpOnly: false, secure: false, sameSite: 'Lax', domain: process.env.FRONT_END_URL, path: '/' });
+
 
       console.log("User logged in with Google");
 
