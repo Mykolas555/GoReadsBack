@@ -59,7 +59,9 @@ app.get('/auth/google',
 const findOrCreateUser = require('./controllers/userContorller').findOrCreateUser;
 
 app.get('/auth/google/callback',
+
   passport.authenticate('google', { failureRedirect: process.env.FRONT_END_URL }),
+
   async (req, res) => {
     try {
       const userID = req.user.id;
@@ -69,21 +71,29 @@ app.get('/auth/google/callback',
         email: req.user.emails[0].value
       };
       await findOrCreateUser(userID, userData);
+
       const token = jwt.sign(
-        { id: req.user.id, name: req.user.name.givenName, tokenGo: req.user.accessToken }, process.env.JWT_SECRET
+        { id: req.user.id, name: req.user.name.givenName, tokenGo: req.user.accessToken },
+        process.env.JWT_SECRET
       );
-      
-      res.cookie('Token', token, { httpOnly: false, secure: false });
-      res.cookie('ID', req.user.id, { httpOnly: false, secure: false });
-      res.cookie('User', req.user.name.givenName, { httpOnly: false, secure: false });
+
+      // Set the cookies before redirecting
+      res.cookie('Token', token, { httpOnly: false, secure: false, sameSite: 'Lax' });
+      res.cookie('ID', req.user.id, { httpOnly: false, secure: false, sameSite: 'Lax' });
+      res.cookie('User', req.user.name.givenName, { httpOnly: false, secure: false, sameSite: 'Lax' });
+
+      console.log("User logged in with Google");
+
+      // Redirect to the front end URL
       res.redirect(process.env.FRONT_END_URL);
-      console.log("user Loged in with google")
+
     } catch (error) {
       console.error("Error during Google authentication callback:", error);
       res.redirect(process.env.FRONT_END_URL);
     }
   }
 );
+
 
 app.get('/auth/logout', (req, res) => {
   res.clearCookie('Token');
