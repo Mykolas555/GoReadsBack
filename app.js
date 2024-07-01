@@ -26,7 +26,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false, httpOnly: false }
+  cookie: { secure: true, httpOnly: true }
 }));
 
 // Google auth
@@ -79,9 +79,9 @@ app.get('/auth/google/callback',
 
       // Set the cookies before redirecting
       res
-      .cookie('Token', token, { httpOnly: false, secure: false })
-      .cookie('ID', req.user.id, { httpOnly: false, secure: false })
-      .cookie('User', req.user.name.givenName, { httpOnly: false, secure: false })
+      .cookie('Token', token, { httpOnly: true, secure: true })
+      .cookie('ID', req.user.id, { httpOnly: true, secure: true })
+      .cookie('User', req.user.name.givenName, { httpOnly: true, secure: true })
       .redirect(process.env.FRONT_END_URL)
 
       console.log("User logged in with Google");
