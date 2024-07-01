@@ -40,6 +40,7 @@ passport.use(new GoogleStrategy({
 },
 function(accessToken, refreshToken, profile, done) {
   profile.accessToken = accessToken;
+  profile.refreshToken = refreshToken
   return done(null, profile);
 }));
 
@@ -85,11 +86,6 @@ app.get('/auth/google/callback',
       .redirect(process.env.FRONT_END_URL)
 
       console.log("User logged in with Google");
-
-      // Redirect to the front end URL
-      
-      
-
     } catch (error) {
       console.error("Error during Google authentication callback:", error);
       res.redirect(process.env.FRONT_END_URL);
