@@ -72,6 +72,7 @@ app.get('/auth/google/callback',
       const token = jwt.sign(
         { id: req.user.id, name: req.user.name.givenName, tokenGo: req.user.accessToken }, process.env.JWT_SECRET
       );
+      
       res.cookie('Token', token, { httpOnly: false, secure: false });
       res.cookie('ID', req.user.id, { httpOnly: false, secure: false });
       res.cookie('User', req.user.name.givenName, { httpOnly: false, secure: false });
