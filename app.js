@@ -76,6 +76,7 @@ app.get('/auth/google/callback',
       res.cookie('ID', req.user.id, { httpOnly: false, secure: false });
       res.cookie('User', req.user.name.givenName, { httpOnly: false, secure: false });
       res.redirect(process.env.FRONT_END_URL);
+      console.log("user Loged in with google")
     } catch (error) {
       console.error("Error during Google authentication callback:", error);
       res.redirect(process.env.FRONT_END_URL);

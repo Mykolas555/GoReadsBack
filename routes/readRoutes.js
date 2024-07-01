@@ -15,6 +15,12 @@ router.get('/:userGoogleID',
 
 router.post('/postRead',
     tokenProtection, 
-    readController.createRead)
+    readController.createRead
+)
+
+router.delete('/deleteRead/:userID/:ID',
+    tokenProtection,
+    readController.deleteRead
+)
 
 module.exports = router;
