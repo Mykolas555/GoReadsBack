@@ -83,7 +83,7 @@ app.get('/auth/google/callback',
       .cookie('Token', token, { httpOnly: true, secure: true, domain: process.env.FRONT_END_URL , sameSite: 'None' })
       .cookie('ID', req.user.id, { httpOnly: true, secure: true, domain: process.env.FRONT_END_URL, sameSite: 'None' })
       .cookie('User', req.user.name.givenName, { httpOnly: true, secure: true, domain: process.env.FRONT_END_URL, sameSite: 'None' })
-      .redirect(process.env.FRONT_END_URL);
+      //.redirect(process.env.FRONT_END_URL);
 
       console.log("User logged in with Google");
     } catch (error) {
