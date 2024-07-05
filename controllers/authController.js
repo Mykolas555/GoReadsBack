@@ -71,7 +71,14 @@ exports.loginUser = async (req, res) => {
     res.cookie('User', user.name, { secure: true, httpOnly: true });
     res.setHeader('Access-Control-Allow-Origin', process.env.FRONT_END_URL);
     res.setHeader('Access-Control-Allow-Credentials', 'true'); 
-    res.status(200).json({ message: 'User logged in successfully', token });
+    res.status(200).json({ 
+      message: 'User logged in successfully',
+      data:{
+        userName: user.name,
+        userID: user._id,
+        userToken: token
+      }
+    });
 
   } catch (error) {
     console.error("Error during user login:", error);
