@@ -13,9 +13,9 @@ const UserSchema = new mongoose.Schema({
         type:String,
         required:[true, "User must have email"],
     },
-    googleID:{
+    password:{
         type:String,
-        required:[true, 'User must have google ID'],
+        required:[true, 'User must password'],
     }
 })
 
