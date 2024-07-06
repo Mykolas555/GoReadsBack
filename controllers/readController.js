@@ -28,7 +28,7 @@ exports.deleteRead = async (req, res) => {
                 message: "No read found with that ID"
             });
         }
-        if (read.userGoogleID !== userID) {
+        if (read.userID !== userID) {
             return res.status(403).json({
                 status: "Fail",
                 message: "You do not have permission to delete this read"
@@ -65,9 +65,9 @@ exports.getAllReads = async (req, res) => {
 }
 
 exports.getAllUserReads = async (req, res) => {
-    const { userGoogleID } = req.params;
+    const { userID } = req.params;
     try {
-      const reads = await Read.find({ userGoogleID }).sort({ createdAt: -1 });;
+      const reads = await Read.find({ userID }).sort({ createdAt: -1 });;
       res.status(200).json({
         status: "Success",
         results: reads.length,

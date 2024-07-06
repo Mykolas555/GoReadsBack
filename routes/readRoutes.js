@@ -8,7 +8,7 @@ router.get('/allReads',
     readController.getAllReads
 )
 
-router.get('/:userGoogleID',
+router.get('/:userID',
     tokenProtection,
     readController.getAllUserReads
 )
